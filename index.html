@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulador de Gestión Financiera - Cashea (Lite / Avanzada)</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 15px;
+      font-size: 14px;
+    }
+
+    .container {
+      max-width: 950px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      position: relative;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #222;
+      line-height: 1.3;
+    }
+
+    p.intro {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    h2 {
+      font-size: 16px;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #333;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 12px 10px;
+      margin-top: 6px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    button {
+      margin-top: 18px;
+      padding: 14px 16px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: 600;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    button.secondary {
+      background: #6c757d;
+      margin-top: 10px;
+    }
+
+    button.secondary:hover {
+      background: #545b62;
+    }
+
+    .compra-activa {
+      margin-top: 15px;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+
+    .result {
+      margin-top: 25px;
+      padding: 15px;
+      background: #f9fbff;
+      border: 1px solid #e0e7ff;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .result h3 {
+      margin-top: 0;
+      font-size: 15px;
+      color: #222;
+    }
+
+    .alert {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .alert.ok {
+      background: #e6ffed;
+      border: 1px solid #b7ebc2;
+      color: #155724;
+    }
+
+    .alert.warn {
+      background: #fff3cd;
+      border: 1px solid #ffe58f;
+      color: #856404;
+    }
+
+    .alert.bad {
+      background: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+    }
+
+    small {
+      color: #666;
+      font-size: 11px;
+      display: block;
+      margin-top: 15px;
+      line-height: 1.4;
+    }
+
+    ul {
+      margin: 8px 0 15px 20px;
+      padding: 0;
+      line-height: 1.6;
+    }
+
+    .periodo-box {
+      margin-top: 10px;
+      padding: 10px;
+      border-left: 4px solid #007bff;
+      background: #f0f7ff;
+      border-radius: 4px;
+    }
+
+    /* Estilos para gamificación */
+    .semaforo {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+
+    .semaforo.verde {
+      background: #d4edda;
+      color: #155724;
+      border: 2px solid #c3e6cb;
+    }
+
+    .semaforo.amarillo {
+      background: #fff3cd;
+      color: #856404;
+      border: 2px solid #ffeaa7;
+    }
+
+    .semaforo.rojo {
+      background: #f8d7da;
+      color: #721c24;
+      border: 2px solid #f5c6cb;
+    }
+
+    .score-box {
+      background: #f0f7ff;
+      border: 1px solid #cce5ff;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 15px;
+    }
+
+    .score-bar {
+      height: 20px;
+      background: #e9ecef;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .score-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #1dd1a1);
+      transition: width 0.5s ease;
+    }
+
+    .rango-box {
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 15px;
+    }
+
+    .mision-box {
+      background: #e8f5e9;
+      border: 1px solid #c8e6c9;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .badge-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .badge {
+      background: #f0f7ff;
+      border: 1px solid #bbdefb;
+      border-radius: 20px;
+      padding: 6px 10px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .barra-proyeccion {
+      margin-bottom: 12px;
+    }
+
+    .barra-label {
+      font-size: 12px;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .barra-fondo {
+      height: 24px;
+      background: #e9ecef;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .barra-lleno {
+      height: 100%;
+      background: #007bff;
+      transition: width 0.5s ease;
+    }
+
+    .barra-lleno.verde {
+      background: #1dd1a1;
+    }
+
+    .barra-lleno.amarillo {
+      background: #feca57;
+    }
+
+    .barra-lleno.rojo {
+      background: #ff6b6b;
+    }
+
+    /* Botón toggle de versión (esquina superior derecha) */
+    .version-toggle {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #f0f7ff;
+      border: 1px solid #cce5ff;
+      border-radius: 20px;
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .version-toggle:hover {
+      background: #e6f0ff;
+    }
+
+    .version-toggle .indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #1dd1a1;
+    }
+
+    .version-toggle .indicator.avanzada {
+      background: #007bff;
+    }
+
+    /* Media queries para pantallas más grandes */
+    @media (min-width: 768px) {
+      body {
+        padding: 20px;
+        font-size: 14px;
+      }
+
+      .container {
+        padding: 25px 30px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      p.intro {
+        font-size: 14px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      label {
+        font-size: 14px;
+      }
+
+      select, input {
+        padding: 10px 10px;
+        font-size: 14px;
+      }
+
+      button {
+        padding: 12px 16px;
+        font-size: 15px;
+      }
+
+      .result {
+        font-size: 14px;
+      }
+
+      .result h3 {
+        font-size: 16px;
+      }
+
+      .semaforo {
+        font-size: 24px;
+      }
+
+      .badge {
+        font-size: 13px;
+        padding: 6px 12px;
+      }
+
+      .barra-label {
+        font-size: 13px;
+      }
+
+      .version-toggle {
+        top: 20px;
+        right: 20px;
+        font-size: 13px;
+        padding: 6px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Botón toggle de versión -->
+    <div class="version-toggle" id="versionToggle" title="Cambiar versión Lite/Avanzada">
+      <span class="indicator" id="versionIndicator"></span>
+      <span id="versionLabel">Versión: Lite</span>
+    </div>
+
+    <h1>Simulador de Gestión Financiera - Cashea</h1>
+    <p class="intro">
+      Ingresa tu nivel, crédito e ingreso mensual. Luego agrega tus compras activas y la nueva compra que estás considerando.
+    </p>
+
+    <!-- Datos básicos del usuario -->
+    <h2>1. Tus datos básicos</h2>
+
+    <label for="nivel">Nivel en Cashea</label>
+    <select id="nivel">
+      <option value="1">Nivel 1 (Semilla)</option>
+      <option value="2">Nivel 2 (Raíz)</option>
+      <option value="3">Nivel 3 (Hoja)</option>
+      <option value="4">Nivel 4 (Tronco)</option>
+      <option value="5">Nivel 5 (Árbol)</option>
+      <option value="6">Nivel 6 (Araguaney)</option>
+    </select>
+
+    <label for="credito">Crédito disponible (Línea Principal, en USD)</label>
+    <input type="number" id="credito" placeholder="Ej: 130" min="0" step="1" inputmode="numeric" />
+
+    <label for="ingreso">Ingreso mensual neto (en USD)</label>
+    <input type="number" id="ingreso" placeholder="Ej: 200" min="0" step="1" inputmode="numeric" />
+
+    <!-- Compras activas -->
+    <h2>2. Compras Cashea activas</h2>
+    <p style="font-size:12px;color:#555;">
+      Agrega cada compra que tengas actualmente activa en Cashea. 
+      Ingresa el <strong>saldo pendiente</strong> (lo que aún debes) y el número de cuotas restantes.
+    </p>
+
+    <div id="listaComprasActivas"></div>
+    <button class="secondary" type="button" onclick="agregarCompraActiva()">+ Agregar compra activa</button>
+
+    <!-- Nueva compra simulada -->
+    <h2>3. Nueva compra que estás considerando</h2>
+
+    <label for="cuotasNueva">Número de cuotas que te ofrecen para esta compra</label>
+    <select id="cuotasNueva">
+      <option value="1">1 cuota (14 días)</option>
+      <option value="2">2 cuotas (28 días ≈ 1 mes)</option>
+      <option value="3">3 cuotas (42 días ≈ 1,5 meses)</option>
+      <option value="4">4 cuotas (56 días ≈ 2 meses)</option>
+      <option value="6">6 cuotas (84 días ≈ 3 meses)</option>
+      <option value="9">9 cuotas (126 días ≈ 4,5 meses)</option>
+      <option value="12">12 cuotas (168 días ≈ 6 meses)</option>
+    </select>
+
+    <label for="montoNueva">Monto de la nueva compra (precio del producto, en USD)</label>
+    <input type="number" id="montoNueva" placeholder="Ej: 20" min="0" step="1" inputmode="numeric" />
+
+    <button onclick="calcular()">Calcular impacto en tu presupuesto</button>
+
+    <!-- Resultados -->
+    <div id="resultado" class="result" style="display:none;">
+      <h3>Resultado de la simulación</h3>
+      <div id="contenidoResultado"></div>
+    </div>
+
+    <small>
+      Nota: Esta es una herramienta educativa. Los montos de crédito e iniciales pueden variar según la evaluación interna de Cashea y las promociones vigentes.
+    </small>
+  </div>
+
+  <script>
+    // Estado de la versión (Lite por defecto)
+    let version = 'lite';
+
+    // Toggle de versión
+    const versionToggle = document.getElementById('versionToggle');
+    const versionLabel = document.getElementById('versionLabel');
+    const versionIndicator = document.getElementById('versionIndicator');
+
+    versionToggle.addEventListener('click', () => {
+      version = version === 'lite' ? 'avanzada' : 'lite';
+      versionLabel.textContent = `Versión: ${version === 'lite' ? 'Lite' : 'Avanzada'}`;
+      versionIndicator.classList.toggle('avanzada', version === 'avanzada');
+    });
+
+    // Datos base por nivel (referenciales)
+    const creditoPorNivel = {
+      1: 160,
+      2: 200,
+      3: 250,
+      4: 313,
+      5: 391,
+      6: 489
+    };
+
+    // Inicial típico (%) por nivel (versión normal)
+    const inicialPorNivel = {
+      1: 60,
+      2: 50,
+      3: 40,
+      4: 40,
+      5: 40,
+      6: 40
+    };
+
+    let contadorCompras = 0;
+
+    function agregarCompraActiva() {
+      contadorCompras++;
+      const contenedor = document.getElementById('listaComprasActivas');
+
+      const div = document.createElement('div');
+      div.className = 'compra-activa';
+      div.id = 'compraActiva_' + contadorCompras;
+
+      div.innerHTML = `
+        <label>Saldo pendiente de la compra #${contadorCompras} (lo que aún debes, en USD)</label>
+        <input type="number" class="saldoCompraActiva" placeholder="Ej: 8" min="0" step="1" inputmode="numeric" />
+
+        <label>Número de cuotas restantes de esta compra</label>
+        <input type="number" class="cuotasCompraActiva" placeholder="Ej: 1" min="1" step="1" inputmode="numeric" />
+
+        <button class="secondary" type="button" onclick="eliminarCompraActiva(${contadorCompras})">Eliminar esta compra</button>
+      `;
+
+      contenedor.appendChild(div);
+    }
+
+    function eliminarCompraActiva(id) {
+      const div = document.getElementById('compraActiva_' + id);
+      if (div) div.remove();
+    }
+
+    // Función para calcular cuánto se paga en los primeros N días de un plan
+    function pagoEnNDias(saldo, cuotasTotales, dias) {
+      const cuotasPorPagar = Math.min(cuotasTotales, Math.floor(dias / 14));
+      if (cuotasPorPagar <= 0) return 0;
+      const cuotaUnitaria = saldo / cuotasTotales;
+      return cuotaUnitaria * cuotasPorPagar;
+    }
+
+    // Calcular score financiero (0–100)
+    function calcularScore(deudaTotalPorcentaje, proximos14DiasPorcentaje, nComprasActivas) {
+      let score = 100 - (deudaTotalPorcentaje * 1.5) - (proximos14DiasPorcentaje * 1) - (nComprasActivas * 3);
+      return Math.max(0, Math.min(100, score));
+    }
+
+    // Determinar rango según score
+    function determinarRango(score) {
+      if (score >= 80) {
+        return { nombre: 'Experto', descripcion: 'Excelente control de tu crédito' };
+      } else if (score >= 60) {
+        return { nombre: 'Gestionador', descripcion: 'Buena gestión, puedes mejorar' };
+      } else if (score >= 40) {
+        return { nombre: 'Aprendiz', descripcion: 'Vas por buen camino, pero con cuidado' };
+      } else {
+        return { nombre: 'Novato', descripcion: 'Necesitas atención urgente' };
+      }
+    }
+
+    // Determinar semáforo según deuda total y próximos 14 días
+    function determinarSemaforo(deudaTotalPorcentaje, proximos14DiasPorcentaje) {
+      if (deudaTotalPorcentaje < 25 && proximos14DiasPorcentaje < 20) {
+        return 'verde';
+      } else if (deudaTotalPorcentaje > 40 || proximos14DiasPorcentaje > 30) {
+        return 'rojo';
+      } else {
+        return 'amarillo';
+      }
+    }
+
+    // Generar misiones sugeridas
+    function generarMisiones(deudaTotalPorcentaje, proximos14DiasPorcentaje, nComprasActivas) {
+      const misiones = [];
+
+      if (deudaTotalPorcentaje > 25) {
+        misiones.push({
+          titulo: '📉 Reductor de Deuda',
+          descripcion: `Reduce tu deuda total a menos del 25% de tu ingreso (actual: ${deudaTotalPorcentaje.toFixed(1)}%).`
+        });
+      }
+
+      if (proximos14DiasPorcentaje > 20) {
+        misiones.push({
+          titulo: '⏱️ Control de Flujo',
+          descripcion: `Mantén lo que pagarás en los próximos 14 días por debajo del 20% de tu ingreso (actual: ${proximos14DiasPorcentaje.toFixed(1)}%).`
+        });
+      }
+
+      if (nComprasActivas > 2) {
+        misiones.push({
+          titulo: '🎯 Enfoque Total',
+          descripcion: `No tengas más de 2 compras activas al mismo tiempo (actual: ${nComprasActivas}).`
+        });
+      }
+
+      if (misiones.length === 0) {
+        misiones.push({
+          titulo: '🏆 Mantén el Ritmo',
+          descripcion: 'Tu salud financiera está en buena forma. Sigue pagando a tiempo y evita sumar compras innecesarias.'
+        });
+      }
+
+      return misiones;
+    }
+
+    // Determinar badges ganados
+    function determinarBadges(deudaTotalPorcentaje, proximos14DiasPorcentaje, nComprasActivas) {
+      const badges = [];
+
+      if (deudaTotalPorcentaje < 25) {
+        badges.push({ icono: '🛡️', nombre: 'Guardián del Presupuesto' });
+      }
+
+      if (proximos14DiasPorcentaje < 15) {
+        badges.push({ icono: '⏱️', nombre: 'Maestro del Flujo' });
+      }
+
+      if (nComprasActivas <= 2) {
+        badges.push({ icono: '🎯', nombre: 'Enfoque Total' });
+      }
+
+      return badges;
+    }
+
+    // Color de barra según porcentaje
+    function colorBarra(porcentaje, tipo) {
+      if (tipo === 'deuda') {
+        if (porcentaje < 25) return 'verde';
+        if (porcentaje < 40) return 'amarillo';
+        return 'rojo';
+      } else {
+        if (porcentaje < 20) return 'verde';
+        if (porcentaje < 30) return 'amarillo';
+        return 'rojo';
+      }
+    }
+
+    function calcular() {
+      const nivel = parseInt(document.getElementById('nivel').value, 10);
+      const creditoInput = parseFloat(document.getElementById('credito').value);
+      const ingreso = parseFloat(document.getElementById('ingreso').value);
+
+      const cuotasNueva = parseInt(document.getElementById('cuotasNueva').value, 10);
+      const montoNueva = parseFloat(document.getElementById('montoNueva').value);
+
+      const resultadoDiv = document.getElementById('resultado');
+      const contenido = document.getElementById('contenidoResultado');
+
+      // Validaciones básicas
+      if (isNaN(creditoInput) || creditoInput <= 0) {
+        contenido.innerHTML = '<div class="alert bad">Por favor ingresa un crédito disponible válido (mayor a 0).</div>';
+        resultadoDiv.style.display = 'block';
+        return;
+      }
+
+      if (isNaN(ingreso) || ingreso <= 0) {
+        contenido.innerHTML = '<div class="alert bad">Por favor ingresa un ingreso mensual válido (mayor a 0).</div>';
+        resultadoDiv.style.display = 'block';
+        return;
+      }
+
+      // Recopilar compras activas
+      const comprasActivas = [];
+      document.querySelectorAll('.compra-activa').forEach(div => {
+        const saldo = parseFloat(div.querySelector('.saldoCompraActiva').value);
+        const cuotas = parseInt(div.querySelector('.cuotasCompraActiva').value, 10);
+
+        if (!isNaN(saldo) && saldo > 0 && !isNaN(cuotas) && cuotas > 0) {
+          comprasActivas.push({ saldo, cuotas });
+        }
+      });
+
+      // Cálculo de deuda total y proyecciones para compras activas
+      let deudaTotalActivas = 0;
+      let totalCuotasActivas = 0;
+
+      comprasActivas.forEach(c => {
+        deudaTotalActivas += c.saldo;
+        totalCuotasActivas += c.cuotas;
+      });
+
+      // Cálculo de nueva compra
+      let mensajeNuevaCompra = '';
+      let deudaNueva = 0;
+      let cuotasNuevaReales = 0;
+      let inicialNueva = 0;
+      let saldoFinanciarNueva = 0;
+
+      if (!isNaN(montoNueva) && montoNueva > 0 && cuotasNueva > 0) {
+        const inicialPorc = inicialPorNivel[nivel] || 40;
+        inicialNueva = montoNueva * (inicialPorc / 100);
+        saldoFinanciarNueva = montoNueva - inicialNueva;
+
+        deudaNueva = saldoFinanciarNueva;
+        cuotasNuevaReales = cuotasNueva;
+
+        mensajeNuevaCompra = `
+          <p><strong>Nueva compra considerada:</strong></p>
+          <ul>
+            <li>Monto del producto: ${montoNueva.toFixed(2)} USD</li>
+            <li>Pago inicial estimado (${inicialPorc}%): ${inicialNueva.toFixed(2)} USD (se paga al momento de la compra)</li>
+            <li>Saldo a financiar (deuda de cuotas): ${deudaNueva.toFixed(2)} USD</li>
+            <li>Número de cuotas: ${cuotasNueva}</li>
+          </ul>
+        `;
+      } else {
+        mensajeNuevaCompra = `
+          <p><strong>Nueva compra considerada:</strong> No ingresaste un monto válido para una nueva compra, 
+          por lo que solo se evaluarán tus compras activas.</p>
+        `;
+      }
+
+      // Totales de deuda y cuotas
+      const deudaTotal = deudaTotalActivas + deudaNueva;
+      const totalCuotas = totalCuotasActivas + cuotasNuevaReales;
+
+      // Proyecciones: 14, 28, 42 días (incluyendo inicial en la nueva compra)
+      let pago14DiasActivas = 0;
+      let pago28DiasActivas = 0;
+      let pago42DiasActivas = 0;
+
+      comprasActivas.forEach(c => {
+        pago14DiasActivas += pagoEnNDias(c.saldo, c.cuotas, 14);
+        pago28DiasActivas += pagoEnNDias(c.saldo, c.cuotas, 28);
+        pago42DiasActivas += pagoEnNDias(c.saldo, c.cuotas, 42);
+      });
+
+      let pago14DiasNueva = 0;
+      let pago28DiasNueva = 0;
+      let pago42DiasNueva = 0;
+
+      if (deudaNueva > 0 && cuotasNuevaReales > 0) {
+        pago14DiasNueva = inicialNueva + pagoEnNDias(deudaNueva, cuotasNuevaReales, 14);
+        pago28DiasNueva = inicialNueva + pagoEnNDias(deudaNueva, cuotasNuevaReales, 28);
+        pago42DiasNueva = inicialNueva + pagoEnNDias(deudaNueva, cuotasNuevaReales, 42);
+      } else if (inicialNueva > 0) {
+        pago14DiasNueva = inicialNueva;
+        pago28DiasNueva = inicialNueva;
+        pago42DiasNueva = inicialNueva;
+      }
+
+      const pago14DiasTotal = pago14DiasActivas + pago14DiasNueva;
+      const pago28DiasTotal = pago28DiasActivas + pago28DiasNueva;
+      const pago42DiasTotal = pago42DiasActivas + pago42DiasNueva;
+
+      // Equivalente mensual de la deuda (solo cuotas, no incluye inicial)
+      let equivalenteMensual = 0;
+      if (totalCuotas > 0) {
+        const cuotaPromedio = deudaTotal / totalCuotas;
+        equivalenteMensual = cuotaPromedio * (30 / 14);
+      }
+
+      // Porcentajes respecto al ingreso mensual
+      const deudaTotalPorcentajeIngreso = (deudaTotal / ingreso) * 100;
+      const equivalenteMensualPorcentajeIngreso = (equivalenteMensual / ingreso) * 100;
+      const pago14DiasPorcentajeIngreso = (pago14DiasTotal / ingreso) * 100;
+      const pago28DiasPorcentajeIngreso = (pago28DiasTotal / ingreso) * 100;
+      const pago42DiasPorcentajeIngreso = (pago42DiasTotal / ingreso) * 100;
+
+      // Gamificación: score, rango, semáforo, misiones, badges
+      const score = calcularScore(deudaTotalPorcentajeIngreso, pago14DiasPorcentajeIngreso, comprasActivas.length);
+      const rango = determinarRango(score);
+      const semaforo = determinarSemaforo(deudaTotalPorcentajeIngreso, pago14DiasPorcentajeIngreso);
+      const misiones = generarMisiones(deudaTotalPorcentajeIngreso, pago14DiasPorcentajeIngreso, comprasActivas.length);
+      const badges = determinarBadges(deudaTotalPorcentajeIngreso, pago14DiasPorcentajeIngreso, comprasActivas.length);
+
+      // Mensaje de semáforo
+      const mensajeSemaforo = `
+        <div class="semaforo ${semaforo}">
+          ${semaforo === 'verde' ? '🟢 Tu salud financiera está en zona verde' : 
+            semaforo === 'amarillo' ? '🟡 Tu salud financiera está en zona amarilla' : 
+            '🔴 Tu salud financiera está en zona roja'}
+        </div>
+      `;
+
+      // Mensaje de score y rango
+      const mensajeScoreRango = `
+        <div class="score-box">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <strong>Score financiero:</strong>
+            <span style="font-size:18px;font-weight:bold;">${Math.round(score)}/100</span>
+          </div>
+          <div class="score-bar">
+            <div class="score-fill" style="width:${score}%;"></div>
+          </div>
+        </div>
+
+        <div class="rango-box">
+          <strong>Rango actual:</strong> ${rango.nombre}<br>
+          <small>${rango.descripcion}</small>
+        </div>
+      `;
+
+      // Mensaje de misiones
+      const mensajeMisiones = `
+        <h3>🎯 Tus misiones</h3>
+        ${misiones.map(m => `
+          <div class="mision-box">
+            <strong>${m.titulo}</strong><br>
+            ${m.descripcion}
+          </div>
+        `).join('')}
+      `;
+
+      // Mensaje de badges
+      const mensajeBadges = `
+        <h3>🏅 Badges ganados</h3>
+        <div class="badge-container">
+          ${badges.length > 0 ? badges.map(b => `
+            <div class="badge">
+              <span>${b.icono}</span>
+              <span>${b.nombre}</span>
+            </div>
+          `).join('') : '<p>Aún no tienes badges. ¡Completa misiones para ganarlos!</p>'}
+        </div>
+      `;
+
+      // Contenido común (Lite y Avanzada)
+      let contenidoHTML = `
+        ${mensajeSemaforo}
+        ${mensajeScoreRango}
+        ${mensajeMisiones}
+        ${mensajeBadges}
+      `;
+
+      // Contenido adicional solo para versión Avanzada
+      if (version === 'avanzada') {
+        // Mensaje de alerta según semáforo
+        let mensajeAlerta = '';
+        if (semaforo === 'rojo') {
+          mensajeAlerta = `<div class="alert bad">
+            <strong>🚨 Zona roja:</strong> Tu deuda total (${deudaTotalPorcentajeIngreso.toFixed(1)}% del ingreso) 
+            y/o lo que pagarás en los próximos 14 días (${pago14DiasPorcentajeIngreso.toFixed(1)}%) indican riesgo alto.
+            Es momento de frenar nuevas compras y priorizar pagar lo que debes.
+          </div>`;
+        } else if (semaforo === 'amarillo') {
+          mensajeAlerta = `<div class="alert warn">
+            <strong>⚠️ Zona amarilla:</strong> Estás cerca del límite. 
+            Tu deuda total (${deudaTotalPorcentajeIngreso.toFixed(1)}%) y/o los próximos 14 días (${pago14DiasPorcentajeIngreso.toFixed(1)}%) 
+            requieren cuidado. Evita sumar más compras hasta mejorar estos números.
+          </div>`;
+        } else {
+          mensajeAlerta = `<div class="alert ok">
+            <strong>✅ Zona verde:</strong> Tu uso de Cashea es saludable. 
+            Deuda total (${deudaTotalPorcentajeIngreso.toFixed(1)}%) y próximos 14 días (${pago14DiasPorcentajeIngreso.toFixed(1)}%) 
+            están en rangos seguros. ¡Sigue así!
+          </div>`;
+        }
+
+        // Proyección de pagos con barras
+        const mensajeProyeccion = `
+          <h3>📊 Proyección de pagos (incluye inicial)</h3>
+          
+          <div class="barra-proyeccion">
+            <div class="barra-label">
+              <span>Próximos 14 días</span>
+              <span>${pago14DiasTotal.toFixed(2)} USD (${pago14DiasPorcentajeIngreso.toFixed(1)}% del ingreso)</span>
+            </div>
+            <div class="barra-fondo">
+              <div class="barra-lleno ${colorBarra(pago14DiasPorcentajeIngreso, 'flujo')}" 
+                   style="width:${Math.min(100, pago14DiasPorcentajeIngreso * 3)}%;"></div>
+            </div>
+          </div>
+
+          <div class="barra-proyeccion">
+            <div class="barra-label">
+              <span>Próximos 28 días</span>
+              <span>${pago28DiasTotal.toFixed(2)} USD (${pago28DiasPorcentajeIngreso.toFixed(1)}% del ingreso)</span>
+            </div>
+            <div class="barra-fondo">
+              <div class="barra-lleno ${colorBarra(pago28DiasPorcentajeIngreso, 'flujo')}" 
+                   style="width:${Math.min(100, pago28DiasPorcentajeIngreso * 2.5)}%;"></div>
+            </div>
+          </div>
+
+          <div class="barra-proyeccion">
+            <div class="barra-label">
+              <span>Próximos 42 días</span>
+              <span>${pago42DiasTotal.toFixed(2)} USD (${pago42DiasPorcentajeIngreso.toFixed(1)}% del ingreso)</span>
+            </div>
+            <div class="barra-fondo">
+              <div class="barra-lleno ${colorBarra(pago42DiasPorcentajeIngreso, 'flujo')}" 
+                   style="width:${Math.min(100, pago42DiasPorcentajeIngreso * 2)}%;"></div>
+            </div>
+          </div>
+        `;
+
+        // Deuda total y equivalente mensual
+        const mensajeDeuda = `
+          <div class="periodo-box">
+            <p><strong>Deuda total (solo cuotas pendientes)</strong></p>
+            <ul>
+              <li>Monto: ${deudaTotal.toFixed(2)} USD</li>
+              <li>Como % del ingreso: ${deudaTotalPorcentajeIngreso.toFixed(1)}%</li>
+              <li>Total de cuotas restantes: ${totalCuotas}</li>
+            </ul>
+          </div>
+
+          <div class="periodo-box">
+            <p><strong>Equivalente mensual de la deuda (solo cuotas)</strong></p>
+            <ul>
+              <li>Monto: ${equivalenteMensual.toFixed(2)} USD</li>
+              <li>Como % del ingreso: ${equivalenteMensualPorcentajeIngreso.toFixed(1)}%</li>
+            </ul>
+            <p style="font-size:12px;color:#666;">
+              Nota: El equivalente mensual se calcula repartiendo la deuda total entre el número total de cuotas y proyectando a 30 días.
+            </p>
+          </div>
+        `;
+
+        // Sugerencias según nivel
+        let sugerencias = '';
+        if (nivel <= 2) {
+          sugerencias = `
+            <p><strong>Consejo para tu nivel:</strong></p>
+            <ul>
+              <li>Estás en niveles iniciales: prioriza pagar a tiempo para subir de nivel.</li>
+              <li>Evita tener más de 1 o 2 compras activas al mismo tiempo.</li>
+            </ul>
+          `;
+        } else if (nivel >= 3 && nivel <= 4) {
+          sugerencias = `
+            <p><strong>Consejo para tu nivel:</strong></p>
+            <ul>
+              <li>Ya tienes mejores condiciones: úsalas para compras planificadas, no impulsivas.</li>
+              <li>Trata de mantener tu deuda total por debajo del 25% de tu ingreso.</li>
+            </ul>
+          `;
+        } else {
+          sugerencias = `
+            <p><strong>Consejo para tu nivel:</strong></p>
+            <ul>
+              <li>Estás en niveles altos: puedes manejar compras de mayor valor, pero sin excederte.</li>
+              <li>Si ya tienes varias compras activas, evita sumar otra aunque la cuota se vea pequeña.</li>
+            </ul>
+          `;
+        }
+
+        // Recomendación final
+        const recomendacionFinal = `
+          <p><strong>💡 Recomendación final:</strong></p>
+          <ul>
+            <li>Usa tu <strong>score</strong> y <strong>rango</strong> como guía: mientras más alto el score, mejor tu salud financiera.</li>
+            <li>Completa las <strong>misiones</strong> para mejorar tu score y ganar badges.</li>
+            <li>Revisa las <strong>barras de proyección</strong> para ver cómo se distribuye tu flujo de pagos en el tiempo.</li>
+            <li>Paga siempre antes de la fecha límite para evitar bloqueos y poder subir de nivel en Cashea.</li>
+          </ul>
+        `;
+
+        // Armar contenido avanzado
+        contenidoHTML += `
+          ${mensajeAlerta}
+          <h3>📋 Detalles de la nueva compra</h3>
+          ${mensajeNuevaCompra}
+          ${mensajeProyeccion}
+          ${mensajeDeuda}
+          ${sugerencias}
+          ${recomendacionFinal}
+        `;
+      }
+
+      contenido.innerHTML = contenidoHTML;
+      resultadoDiv.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
